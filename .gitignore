@@ -1,3 +1,8 @@
+# Ignore artifacts and typechain types
+
+artifacts/
+typechain/
+
 # Logs
 logs
 *.log
