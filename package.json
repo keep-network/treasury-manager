@@ -1,0 +1,39 @@
+{
+  "name": "@keep-network/grant-utils",
+  "version": "0.0.1",
+  "devDependencies": {
+    "@keep-network/keep-core": "1.1.2",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-keep": "git+https://github.com/keep-network/eslint-config-keep.git#0.2.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "ethereum-waffle": "^2.5.0",
+    "ethers": "^4.0.47",
+    "ethlint": "^1.2.5",
+    "precommit": "^1.2.2",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.10.1",
+    "typechain": "^2.0.0",
+    "typechain-target-ethers": "^1.0.4",
+    "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "lint": "npm run lint:ts",
+    "lint:fix": "npm run lint:fix:ts",
+    "lint:ts": "eslint --ext ts ${npm_package_config_eslintPaths} && prettier --list-different test/*.ts",
+    "lint:fix:ts": "eslint --ext ts --fix ${npm_package_config_eslintPaths} && prettier --write test/*.ts",
+    "build": "typechain --target ethers --outDir typechain 'artifacts/*.json'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keep-network/grant-utils.git"
+  },
+  "bugs": {
+    "url": "https://github.com/keep-network/grant-utils/issues"
+  }
+}
