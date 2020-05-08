@@ -35,5 +35,8 @@
   },
   "bugs": {
     "url": "https://github.com/keep-network/grant-utils/issues"
+  },
+  "dependencies": {
+    "express": "git+https://git@github.com/visionmedia/express.git"
   }
 }
