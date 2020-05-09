@@ -6,8 +6,9 @@
     "esModuleInterop": true,
     "outDir": "dist",
     "resolveJsonModule": true,
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   },
   "include": ["./lib/"],
-  "files": ["index.ts"]
+  "files": ["index.ts", "index.d.ts"]
 }

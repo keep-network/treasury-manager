@@ -5,23 +5,25 @@
   "types": "dist/index.d.ts",
   "devDependencies": {
     "@keep-network/keep-core": "1.1.2",
+    "@typechain/ethers-v4": "^1.0.0",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.5",
     "@typescript-eslint/eslint-plugin": "^2.31.0",
     "@typescript-eslint/parser": "^2.31.0",
     "chai": "^4.2.0",
+    "colors": "^1.4.0",
     "eslint": "^6.8.0",
     "eslint-config-keep": "git+https://github.com/keep-network/eslint-config-keep.git#0.2.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "ethereum-waffle": "^2.5.0",
     "ethlint": "^1.2.5",
+    "glob-promise": "^3.4.0",
     "precommit": "^1.2.2",
     "prettier": "^2.0.5",
     "ts-node": "^8.10.1",
     "typechain": "^2.0.0",
-    "typechain-target-ethers": "^1.0.4",
     "typescript": "^3.8.3"
   },
   "scripts": {
@@ -29,7 +31,7 @@
     "lint:fix": "npm run lint:fix:ts",
     "lint:ts": "eslint --ext ts ${npm_package_config_eslintPaths} && prettier --list-different test/*.ts",
     "lint:fix:ts": "eslint --ext ts --fix ${npm_package_config_eslintPaths} && prettier --write test/*.ts",
-    "build": "nodejs build.js && typechain --target ethers --outDir typechain 'artifacts/*.json' && tsc"
+    "build": "nodejs build.js && typechain --target ethers-v4 --outDir typechain 'artifacts/*/*.json' && tsc"
   },
   "repository": {
     "type": "git",
@@ -40,9 +42,9 @@
   },
   "dependencies": {
     "@gnosis.pm/safe-contracts": "^1.1.1-dev.2",
-    "colors": "^1.4.0",
-    "ethers": "^4.0.47",
-    "express": "git+https://git@github.com/visionmedia/express.git",
-    "glob-promise": "^3.4.0"
+    "@ledgerhq/hw-app-eth": "^4.78.0",
+    "@ledgerhq/hw-transport-node-hid-singleton": "^5.15.0",
+    "@types/ledgerhq__hw-transport-node-hid": "^4.22.1",
+    "ethers": "^4.0.47"
   }
 }
