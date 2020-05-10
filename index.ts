@@ -43,7 +43,7 @@ Promise.all([
   console.log(`Serialized TX: ${serialized}`)
 
   const txHash = await safe.getTransactionHash(
-    txRequest.to || '', 0, txRequest.data || '', zeroAddress, 0, 0, 0, zeroAddress, zeroAddress, txRequest.nonce
+    txRequest.to || '', 0, txRequest.data || '', 0, 0, 0, 0, zeroAddress, zeroAddress, txRequest.nonce
   )
 
   console.log(`Safe TX hash: ${txHash}`)
@@ -67,8 +67,7 @@ Promise.all([
 
   let unsignedExecTx = {
     ...gnosis.getExternalExecTransactionTx(safe,
-    txRequest.to || '', txRequest.value, txRequest.data, txRequest.gasLimit,
-    txRequest.gasPrice, dataSignatures),
+      txRequest.to || '', 0, txRequest.data || '', 0, 0, dataSignatures),
     nonce: 18,
     gasLimit: ethers.utils.bigNumberify('2053087'),
     gasPrice: ethers.utils.bigNumberify('11000000000')
