@@ -41,7 +41,8 @@ export async function signPersonalMessage(ethApp: any, message: string,
 
 function ledgerToEthersSignature(ledgerSignature: {v: string, s: string, r: string}): Signature {
   return {
-    v: parseInt(ledgerSignature['v']),
+    // Gnosis Safe identifies personal message signatures by a v value that is incremented by 4.
+    v: parseInt(ledgerSignature['v']) + 4,
     r: `0x${ledgerSignature['r']}`,
     s: `0x${ledgerSignature['s']}`,
   }
