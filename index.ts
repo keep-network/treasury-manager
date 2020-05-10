@@ -54,7 +54,7 @@ Promise.all([
 
   const dataSig = await ledger.signPersonalMessage(ethApp, txHash)
 
-  const joinedDataSig = ethers.utils.joinSignature(dataSig)
+  const joinedDataSig = ethers.utils.joinSignature(dataSig).replace(/1b$/, '19').replace(/1c$/, '20')
 
   console.log('Signature from Ledger: ', joinedDataSig)
 
