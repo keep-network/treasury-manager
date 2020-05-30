@@ -15,6 +15,18 @@ export function getSafe(address: string,
     .connect(wallet).attach(address)) as GnosisSafe
 }
 
+export function getDetails(safe: GnosisSafe) {
+  return Promise.all([
+    safe.nonce(),
+    safe.getOwners(),
+    safe.getThreshold(),
+  ]).then((values) => ({
+    nonce: values[0],
+    owners: values[1],
+    threshold: values[2]
+  }))
+}
+
 export function getExternalExecTransactionTx(safe: GnosisSafe,
     toAddress: string, value: BigNumber, data: any, safeTxGas: BigNumber,
     gasPrice: BigNumber, signatures: string[]): UnsignedTransaction {

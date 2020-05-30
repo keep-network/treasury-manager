@@ -10,5 +10,6 @@
     "sourceMap": true
   },
   "include": ["./lib/"],
-  "files": ["index.ts", "index.d.ts"]
+  "files": ["index.ts", "index.d.ts"],
+  "exclude": ["node_modules"]
 }

@@ -44,7 +44,16 @@
     "@gnosis.pm/safe-contracts": "^1.1.1-dev.2",
     "@ledgerhq/hw-app-eth": "^4.78.0",
     "@ledgerhq/hw-transport-node-hid-singleton": "^5.15.0",
+    "@types/clear": "^0.1.0",
+    "@types/cli-table": "^0.3.0",
+    "@types/figlet": "^1.2.0",
+    "@types/inquirer": "^6.5.0",
     "@types/ledgerhq__hw-transport-node-hid": "^4.22.1",
-    "ethers": "^4.0.47"
+    "chalk": "^4.0.0",
+    "clear": "^0.1.0",
+    "cli-table": "^0.3.1",
+    "ethers": "^4.0.47",
+    "figlet": "^1.4.0",
+    "inquirer": "^7.1.0"
   }
 }
