@@ -41,6 +41,20 @@ export function getStakingTx(grant : ManagedGrant, stakingContract : string,
   }
 }
 
+export function getCancelStakingTx(grant : ManagedGrant, operator : string) {
+  const data = grant.interface.functions.cancelStake.encode([operator])
+
+  const zero = ethers.utils.bigNumberify(0)
+  return {
+    data: data,
+    to: grant.address,
+    value: zero,
+    gasLimit: zero,
+    gasPrice: zero,
+    nonce: 0
+  }
+}
+
 export function keepToWei(numberTokens: number | string): BigNumber {
   return ethers.utils.parseEther(numberTokens.toString())
 }
