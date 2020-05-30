@@ -12,12 +12,24 @@ const zero = ethers.utils.bigNumberify(0)
 
 export const KEEP_MAINNET_TOKEN_ADDRESS = '0x85eee30c52b0b379b046fb0f85f4f3dc3009afec'
 
-export function getManagedGrant(address : string, provider : ethers.providers.Provider) {
+export function getManagedGrant(address : string, provider : ethers.providers.Provider) : ManagedGrant {
   let wallet = ethers.Wallet.createRandom().connect(provider)
   let abi = JSON.stringify(ManagedGrantJSON)
 
   return (ethers.ContractFactory.fromSolidity(abi)
     .connect(wallet).attach(address) as ManagedGrant)
+}
+
+export function getDetails(grant : ManagedGrant) {
+  return Promise.all([
+    grant.grantId(),
+    grant.grantManager(),
+    grant.grantee(),
+  ]).then((values) => ({
+    id: values[0],
+    manager: values[1],
+    grantee: values[2],
+  }))
 }
 
 export function getStakingTx(grant : ManagedGrant, stakingContract : string,

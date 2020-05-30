@@ -9,6 +9,9 @@ import { ethers } from 'ethers'
 import * as gnosis from './gnosis'
 import { GnosisSafe } from './typechain/GnosisSafe'
 
+import * as keep from './keep'
+import { ManagedGrant } from './typechain/ManagedGrant'
+
 function abbreviatedAddress(address : string) : string {
   return `${address.substr(0, 5)}...${address.slice(-3)}`
 }
@@ -74,6 +77,69 @@ async function getSafeFromUser(provider: ethers.providers.Provider)
   }
 }
 
+async function getFormattedGrantDetails(grant: ManagedGrant) : Promise<string> {
+  let details = await keep.getDetails(grant)
+  let table = new Table()
+  table.push(
+    { address: grant.address },
+    { id: details.id },
+    { grantee: details.grantee },
+    { manager:  details.manager },
+  )
+  return table.toString()
+}
+
+async function getGrantFromUser(provider: ethers.providers.Provider)
+  : Promise<ManagedGrant> {
+  let grant : ManagedGrant
+  let safeDetails
+
+  while (true) {
+    let answers = await inquirer.prompt([{
+      name: 'useManagedGrant',
+      message: 'Use a managed grant?',
+      type: 'confirm'
+    }, {
+      name: 'grantAddress',
+      message: 'Managed grant address:',
+      validate: (value: string) => {
+        try {
+          ethers.utils.getAddress(value)
+          return true
+        } catch (e) {
+          return 'Enter a valid Ethereum address'
+        }
+      },
+      when: (answers) => answers.useManagedGrant,
+    },{
+      name: 'grantId',
+      message: 'Grant ID:',
+      validate: (value: string) => !isNaN(parseInt(value)),
+      when: (answers) => !answers.useManagedGrant,
+    }])
+
+    grant = await keep.getManagedGrant(answers.grantAddress, provider)
+
+    let newAnswers = (await inquirer.prompt([{
+      name: 'confirmed',
+      message: async (newAnswers) => {
+        try {
+          let detailsTable = await getFormattedGrantDetails(grant)
+
+          return `\n${detailsTable}\n\nDoes this look right?`
+        } catch (e) {
+          return "That doesn't look like a ManagedGrant, are you sure?"
+        }
+      },
+      type: 'confirm'
+    }]))
+
+    if (newAnswers.confirmed) {
+      return grant
+    }
+  }
+}
+
 const main = async () => {
   clear()
 
@@ -82,6 +148,8 @@ const main = async () => {
   const provider = ethers.getDefaultProvider()
 
   let safe = await getSafeFromUser(provider)
+
+  let grant = await getGrantFromUser(provider)
 }
 
 main()
