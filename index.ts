@@ -66,8 +66,6 @@ Promise.all([
   ]
 
   let unsignedExecTx = {
-    ...gnosis.getExternalExecTransactionTx(safe,
-      txRequest.to || '', 0, txRequest.data || '', 0, 0, dataSignatures),
     nonce: 18,
     gasLimit: ethers.utils.bigNumberify('2053087'),
     gasPrice: ethers.utils.bigNumberify('11000000000')
