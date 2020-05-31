@@ -15,7 +15,13 @@ export function getSafe(address: string,
     .connect(wallet).attach(address)) as GnosisSafe
 }
 
-export function getDetails(safe: GnosisSafe) {
+export interface SafeDetails {
+  owners: string[],
+  threshold: BigNumber,
+  nonce: BigNumber,
+}
+
+export function getDetails(safe: GnosisSafe) : Promise<SafeDetails> {
   return Promise.all([
     safe.nonce(),
     safe.getOwners(),

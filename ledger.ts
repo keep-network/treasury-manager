@@ -32,14 +32,13 @@ export async function signTransaction(ethApp: any, tx: UnsignedTransaction,
 
 export async function signPersonalMessage(ethApp: any, message: string,
     _derivationPath = derivationPath) {
-  debugger
   const sig = await ethApp.signPersonalMessage(
     _derivationPath, removeHexPrefix(message))
 
   return ledgerToEthersSignature(sig)
 }
 
-function ledgerToEthersSignature(ledgerSignature: {v: string, s: string, r: string}): Signature {
+export function ledgerToEthersSignature(ledgerSignature: {v: string, s: string, r: string}) : Signature {
   return {
     // Gnosis Safe identifies personal message signatures by a v value that is incremented by 4.
     v: parseInt(ledgerSignature['v']) + 4,

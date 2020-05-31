@@ -32,6 +32,21 @@ export function getDetails(grant : ManagedGrant) {
   }))
 }
 
+export function getWithdrawalTx(grant : ManagedGrant) {
+  const iface = grant.interface
+
+  const data = iface.functions.withdraw.encode([])
+
+  return {
+    data: data,
+    to: grant.address,
+    value: zero,
+    gasLimit: zero,
+    gasPrice: zero,
+    nonce: 0
+  }
+}
+
 export function getStakingTx(grant : ManagedGrant, stakingContract : string,
     amount : ethers.utils.BigNumber, operator : string, beneficiary : string,
     authorizer : string) {
