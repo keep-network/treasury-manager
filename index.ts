@@ -12,16 +12,14 @@ import * as ledger from './ledger'
 import { removeHexPrefix } from './utils'
 
 import * as gnosis from './gnosis'
-import { GnosisSafe } from './typechain/GnosisSafe'
 
 import * as keep from './keep'
-import { ManagedGrant } from './typechain/ManagedGrant'
 
 function abbreviatedAddress(address : string) : string {
   return `${address.substr(0, 5)}...${address.slice(-3)}`
 }
 
-function formattedSafeDetails(safe : GnosisSafe, details : gnosis.SafeDetails,
+function formattedSafeDetails(safe : gnosis.Safe, details : gnosis.SafeDetails,
   extended = false) : string {
   let table = new Table()
   table.push(
@@ -44,14 +42,14 @@ function formattedSafeDetails(safe : GnosisSafe, details : gnosis.SafeDetails,
   return table.toString()
 }
 
-async function getFormattedSafeDetails(safe: GnosisSafe, extended = false) : Promise<string> {
-  let details = await gnosis.getDetails(safe)
+async function getFormattedSafeDetails(safe: gnosis.Safe, extended = false) : Promise<string> {
+  let details = await safe.getDetails()
   return formattedSafeDetails(safe, details, extended)
 }
 
 async function getSafeFromUser(provider: ethers.providers.Provider)
-  : Promise<GnosisSafe | null> {
-  let safe : GnosisSafe
+  : Promise<gnosis.Safe | null> {
+  let safe : gnosis.Safe
   let safeDetails
 
   while (true) {
@@ -77,7 +75,7 @@ async function getSafeFromUser(provider: ethers.providers.Provider)
       return null
     }
 
-    safe = await gnosis.getSafe(answers.safeAddress, provider)
+    safe = await gnosis.Safe.fromSolidity(answers.safeAddress, provider)
 
     let newAnswers = (await inquirer.prompt([{
       name: 'confirmed',
@@ -99,8 +97,8 @@ async function getSafeFromUser(provider: ethers.providers.Provider)
   }
 }
 
-async function getFormattedGrantDetails(grant: ManagedGrant) : Promise<string> {
-  let details = await keep.getDetails(grant)
+async function getFormattedGrantDetails(grant: keep.ManagedGrant) : Promise<string> {
+  let details = await grant.getDetails()
   let table = new Table()
   table.push(
     { address: grant.address },
@@ -112,8 +110,8 @@ async function getFormattedGrantDetails(grant: ManagedGrant) : Promise<string> {
 }
 
 async function getGrantFromUser(provider: ethers.providers.Provider)
-  : Promise<ManagedGrant> {
-  let grant : ManagedGrant
+  : Promise<keep.ManagedGrant> {
+  let grant : keep.ManagedGrant
   let safeDetails
 
   while (true) {
@@ -141,7 +139,7 @@ async function getGrantFromUser(provider: ethers.providers.Provider)
       when: (answers) => !answers.useManagedGrant,
     }])
 
-    grant = await keep.getManagedGrant(answers.grantAddress, provider)
+    grant = await keep.ManagedGrant.fromSolidity(answers.grantAddress, provider)
 
     let newAnswers = (await inquirer.prompt([{
       name: 'confirmed',
@@ -151,7 +149,7 @@ async function getGrantFromUser(provider: ethers.providers.Provider)
 
           return `\n${detailsTable}\n\nDoes this look right?`
         } catch (e) {
-          return "That doesn't look like a ManagedGrant, are you sure?"
+          return "That doesn't look like a keep.ManagedGrant, are you sure?"
         }
       },
       type: 'confirm'
@@ -215,8 +213,8 @@ async function signMessage(message : string, address? : string) {// : Promise<st
 }
 
 async function prepareSafeTransaction(tx : UnsignedTransaction,
-  safe : GnosisSafe) : Promise<UnsignedTransaction> {
-  let details = await gnosis.getDetails(safe)
+  safe : gnosis.Safe) : Promise<UnsignedTransaction> {
+  let details = await safe.getDetails()
 
   const txHash = await safe.getTransactionHash(tx.to || '', Zero, tx.data || '',
     Zero, Zero, Zero, Zero, AddressZero, AddressZero, details.nonce)
@@ -244,14 +242,13 @@ async function prepareSafeTransaction(tx : UnsignedTransaction,
   signatures.sort((s) =>
     details.owners.indexOf(ethers.utils.verifyMessage(txHash, s)))
 
-
-  return gnosis.getExternalExecTransactionTx(
-    safe, tx.to || '', Zero, tx.data || '', Zero, Zero, signatures)
+  return safe.getExternalExecTransactionTx(
+    tx.to || '', Zero, tx.data || '', Zero, Zero, signatures)
 }
 
-async function withdrawFromGrant(grant : ManagedGrant, safe : GnosisSafe) {
+async function withdrawFromGrant(grant : keep.ManagedGrant, safe : gnosis.Safe) {
   console.log(`Preparing tx to withdraw from grant ${chalk.cyan(grant.address)}...`)
-  let tx = keep.getWithdrawalTx(grant)
+  let tx = grant.getWithdrawalTx()
 
   console.log(`${chalk.bold('Withdrawal TX:')}: ${JSON.stringify(tx, null, 2)}\n`)
 
@@ -305,6 +302,7 @@ const main = async () => {
           name:'Unstake',
           value:'unstake',
         },
+        new inquirer.Separator(),
         {
           name:'Create a grant',
           value:'create-grant',
@@ -312,6 +310,10 @@ const main = async () => {
         {
           name:'Revoke a grant',
           value:'revoke-grant',
+        },
+        {
+          name:'Reassign a grant',
+          value:'reassign-grant',
         },
         new inquirer.Separator(),
         {
@@ -344,7 +346,6 @@ const main = async () => {
       break
     }
   }
-
 }
 
 main()
